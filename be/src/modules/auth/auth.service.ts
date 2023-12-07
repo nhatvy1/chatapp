@@ -53,7 +53,6 @@ export class AuthService {
 
   async login(signInDto: any) {
     const user = await this.userService.login(signInDto);
-    console.log(user)
 
     if (!user) {
       throw new UnauthorizedException('Email hoặc mật khẩu không hợp lệ');
