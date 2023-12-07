@@ -5,8 +5,10 @@ import {
   OneToMany,
   UpdateDateColumn,
   CreateDateColumn,
+  ManyToMany
 } from 'typeorm'
 import { Message } from '../message/message.entity'
+import { Room } from '../room/room.entity'
 
 @Entity()
 export class User {
@@ -36,4 +38,10 @@ export class User {
 
   @OneToMany(() => Message, (message) => message.owner)
   messages: Message[]
+
+  @OneToMany(()=> Room, (room)=> room.owner)
+  rooms: Room[]
+
+  @ManyToMany(()=> Room, (room)=> room.members)
+  joinedRooms: Room[]
 }

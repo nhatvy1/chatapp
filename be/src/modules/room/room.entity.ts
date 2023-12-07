@@ -5,7 +5,9 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
-	ManyToOne
+	ManyToOne,
+  ManyToMany,
+  JoinTable
 } from 'typeorm'
 import { Message } from '../message/message.entity'
 import { User } from '../user/user.entity'
@@ -21,15 +23,19 @@ export class Room {
   @Column()
   description: string
 
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date
+
   @OneToMany(() => Message, (message) => message.room)
   messages: Message[]
 
 	@ManyToOne(() => User, (user) => user.rooms)
   owner: User;
 
-  @CreateDateColumn({ type: 'timestamp' })
-  createdAt: Date
-
-  @UpdateDateColumn({ type: 'timestamp' })
-  updatedAt: Date
+  @ManyToMany(()=> User, (user)=> user.joinedRooms)
+  @JoinTable()
+  members: User[]
 }

@@ -19,12 +19,12 @@ export class Message {
   @Column('text', { array: true })
   images: string[]
 
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date
+
   @ManyToOne(() => User, (user) => user.messages)
   owner: User
 
   @ManyToOne(()=> Room, (room)=> room.messages)
   room: Room
-
-  @CreateDateColumn({ type: 'timestamp' })
-  createdAt: Date
 }
