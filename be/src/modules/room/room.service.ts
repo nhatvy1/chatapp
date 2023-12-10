@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { ConflictException, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Room } from './room.entity'
 import { Repository } from 'typeorm'
@@ -9,7 +9,7 @@ import { UserService } from '../user/user.service'
 export class RoomService {
   constructor(
     @InjectRepository(Room) private readonly roomRepository: Repository<Room>,
-    private readonly userService: UserService
+    private readonly userService: UserService,
   ) {}
 
   getRoomById(id: number) {
@@ -20,14 +20,22 @@ export class RoomService {
     const user1 = await this.userService.findUserById(user.userId)
     const user2 = await this.userService.findUserById(createRoomDto.member)
 
+    const findRoom = await this.roomRepository
+      .createQueryBuilder('room')
+      .innerJoinAndSelect('room.members', 'user')
+      .where('user.id IN (:...userArr)', { userArr: [user1.id, user2.id] })
+      .getOne()
+    if (findRoom) {
+      throw new ConflictException('Room existed.')
+    }
+
     const room = this.roomRepository.create({
       title: createRoomDto.title,
       description: createRoomDto.description,
-      // owner: { id: user.userId },
-      members: [user1, user2]
+      sophong: 2,
+      members: [user1, user2],
     })
 
-    // room.members = [user.userId, createRoomDto.member]
     await this.roomRepository.save(room)
 
     return room

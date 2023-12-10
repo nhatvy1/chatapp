@@ -16,7 +16,8 @@ export class Message {
   @Column()
   text: string
 
-  @Column('text', { array: true })
+  // @Column('text', { array: true })
+  @Column({ type: 'text', array: true, nullable: true })
   images: string[]
 
   @CreateDateColumn({ type: 'timestamp' })
@@ -25,6 +26,6 @@ export class Message {
   @ManyToOne(() => User, (user) => user.messages)
   owner: User
 
-  @ManyToOne(()=> Room, (room)=> room.messages)
+  @ManyToOne(() => Room, (room) => room.messages)
   room: Room
 }

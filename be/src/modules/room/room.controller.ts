@@ -16,8 +16,13 @@ export class RoomController {
   }
 
   @Get(':id')
-  getRoomById(@Param('id', ParseIntPipe) id: number) {
-    return { msg: 'success' }
+  async getRoomById(@Param('id', ParseIntPipe) id: number) {
+    const result = await this.roomService.getRoomById(id)
+    return Response({
+      message: 'success',
+      statusCode: HttpStatus.OK,
+      result
+    })
   }
 
   @Get('search')
@@ -27,8 +32,6 @@ export class RoomController {
 
   @Post()
   async createRoom(@GetCurrentUser() user: any, @Body() createRoomDto: CreateRoomDto) {
-    console.log('Check body: ', createRoomDto)
-    console.log('Check user: ', user)
     const result = await this.roomService.createRoom(createRoomDto, user)
     return Response({
       statusCode: HttpStatus.OK,

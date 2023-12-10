@@ -38,4 +38,7 @@ export class Room {
   @ManyToMany(()=> User, (user)=> user.joinedRooms)
   @JoinTable()
   members: User[]
+
+  @Column()
+  sophong: number
 }
