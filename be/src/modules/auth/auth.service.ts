@@ -55,11 +55,11 @@ export class AuthService {
     const user = await this.userService.login(signInDto);
 
     if (!user) {
-      throw new UnauthorizedException('Email hoặc mật khẩu không hợp lệ');
+      throw new UnauthorizedException('Tài khoản hoặc mật khẩu không đúng');
     }
     const isValidPassword = Hash.compare(signInDto.password, user.password);
     if (!isValidPassword) {
-      throw new UnauthorizedException('Mật khẩu không hợp lệ');
+      throw new UnauthorizedException('Tài khoản hoặc mật khẩu không đúng');
     }
 
     const { access_token, refresh_token }: Tokens = await this.generateToken(
