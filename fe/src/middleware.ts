@@ -1,5 +1,5 @@
 import { getToken } from 'next-auth/jwt'
-import { withAuth } from 'next-auth/middleware'
+import middleware, { withAuth } from 'next-auth/middleware'
 import { NextResponse } from 'next/server'
 
 export default withAuth(
@@ -18,14 +18,19 @@ export default withAuth(
       return null
     }
 
+    if (
+      req.nextUrl.pathname.startsWith('/_next') ||
+      req.nextUrl.pathname.startsWith('/public')
+    ) {
+      return NextResponse.next() // Skip for internal routes and public files
+    }
+
     if (!isAuth) {
       let from = req.nextUrl.pathname
       if (req.nextUrl.search) {
         from += req.nextUrl.search
       }
-      return NextResponse.redirect(
-        new URL(`/login`, req.url),
-      )
+      return NextResponse.redirect(new URL(`/login`, req.url))
     }
   },
   {
@@ -38,10 +43,5 @@ export default withAuth(
 )
 
 export const config = {
-  matcher: [
-    // '/((?!api|_next|static|public|favicon.ico).*)',
-    '/',
-    '/login',
-    '/register',
-  ],
+  matcher: ['/login', '/register', middleware],
 }

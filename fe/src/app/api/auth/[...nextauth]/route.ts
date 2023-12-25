@@ -44,8 +44,8 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      console.log('Check token: ', token)
-      console.log('Check user: ', user)
+      // console.log('Check token: ', token)
+      // console.log('Check user: ', user)
 
       return token
     },
@@ -55,6 +55,7 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: '/login',
+    signOut: '/logout'
   }
 }
 
