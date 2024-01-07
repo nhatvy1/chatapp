@@ -1,7 +1,7 @@
 import { ConflictException, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { User } from './user.entity'
-import { Repository } from 'typeorm'
+import { Not, Repository } from 'typeorm'
 import { RegisterDto } from '../auth/dto/register.dto'
 import { Hash } from 'src/utils/hash'
 import { LoginDto } from '../auth/dto/login.dto'
@@ -14,9 +14,10 @@ export class UserService {
     private cloudinaryService: CloudinaryService,
   ) {}
 
-  async findAll() {
+  async findAll(user: any) {
     const result = await this.userRepository.find({
       select: ['id', 'fullName', 'email', 'avatar'],
+      where: { id: Not(user.userId) },
     })
     return result
   }

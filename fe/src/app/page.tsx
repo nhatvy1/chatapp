@@ -1,12 +1,17 @@
-import { getServerSession } from 'next-auth'
-import Link from 'next/link'
+import Content from '@/components/Content/Content'
+import Sidebar from '@/components/Sidebar/Sidebar'
+import { fetchDataWithAuth } from '@/services/fetch/fetchApi'
 
 export default async function Home() {
-  const session = await getServerSession()
+  const res = await fetchDataWithAuth()
+  const { result } = res
+
   return (
-    <div>
-      <h1>Chat app</h1>
-      <Link href="/api/auth/signout" className='border'>Dang xuat</Link>
+    <div className="bg-slate-50 w-full h-screen p-10 flex justify-center items-center">
+      <div className="flex border w-full h-full justify-between shadow-2xl rounded-3xl bg-white overflow-hidden">
+        <Sidebar users={result ? result : []} />
+        <Content />
+      </div>
     </div>
   )
 }

@@ -21,7 +21,6 @@ declare module 'next-auth' {
       email: string
       fullName: string
       avatar: string
-      phone: string
     }
 
     access_token: string

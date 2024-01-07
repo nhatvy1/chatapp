@@ -1,5 +1,5 @@
 import { getToken } from 'next-auth/jwt'
-import middleware, { withAuth } from 'next-auth/middleware'
+import { withAuth } from 'next-auth/middleware'
 import { NextResponse } from 'next/server'
 
 export default withAuth(
@@ -16,13 +16,6 @@ export default withAuth(
         return NextResponse.redirect(new URL('/', req.url))
       }
       return null
-    }
-
-    if (
-      req.nextUrl.pathname.startsWith('/_next') ||
-      req.nextUrl.pathname.startsWith('/public')
-    ) {
-      return NextResponse.next() // Skip for internal routes and public files
     }
 
     if (!isAuth) {
@@ -43,5 +36,10 @@ export default withAuth(
 )
 
 export const config = {
-  matcher: ['/login', '/register', middleware],
+  matcher: [
+    // '/((?!api|_next/static|_next/image|.png).*)',
+    '/',
+    '/login',
+    '/register',
+  ],
 }

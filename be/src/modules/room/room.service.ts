@@ -32,7 +32,6 @@ export class RoomService {
     const room = this.roomRepository.create({
       title: createRoomDto.title,
       description: createRoomDto.description,
-      sophong: 2,
       members: [user1, user2],
     })
 

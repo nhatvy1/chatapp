@@ -18,7 +18,7 @@ const config: Config = {
         'black-custom': 'rgba(0, 0, 0, 0.4)',
       },
       colors: {
-        primay: '#38a7ff',
+        primary: '#38a7ff',
       },
     },
   },

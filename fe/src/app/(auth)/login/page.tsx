@@ -1,7 +1,6 @@
 'use client'
-import { url } from 'inspector'
 import { signIn } from 'next-auth/react'
-import Image from 'next/image'
+import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -19,20 +18,24 @@ const Login = () => {
   } = useForm<ILogin>()
 
   const onSubmit: SubmitHandler<ILogin> = async (data) => {
-    setLoading(true)
-    const loginResult = await signIn('credentials', {
-      email: data.email,
-      password: data.password,
-      redirect: false,
-      callbackUrl: searchParams?.get('callbackUrl') || '/',
-    })
-    setLoading(false)
-    if (!loginResult?.ok && loginResult?.status) {
-      toast.error(loginResult.error)
-    }
-    if (loginResult?.ok && loginResult?.url) {
-      toast.success('Đăng nhập thành công')
-      router.push(loginResult.url)
+    try {
+      setLoading(true)
+      const loginResult = await signIn('credentials', {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+        callbackUrl: searchParams?.get('callbackUrl') || '/',
+      })
+      if (!loginResult?.ok && loginResult?.status) {
+        toast.error(loginResult.error)
+      }
+      if (loginResult?.ok && loginResult?.url) {
+        toast.success('Đăng nhập thành công')
+        router.push(loginResult.url)
+      }
+    } catch(e) {
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -43,7 +46,7 @@ const Login = () => {
           onSubmit={handleSubmit(onSubmit)}
           className="w-[360px] p-4 border rounded-lg bg-white shadow-lg"
         >
-          <h1 className="text-center text-4xl text-primay mb-4">Đăng nhập</h1>
+          <h1 className="text-center text-4xl text-primary mb-4">Đăng nhập</h1>
           <div className="flex flex-col">
             <label htmlFor="email" className="text-xl mb-1">
               Tài khoản
@@ -96,6 +99,9 @@ const Login = () => {
             />
             <p className="text-red-500">{errors.email?.message}</p>
           </div>
+          <p className='mt-2'>
+            Chưa có tài khoản? <Link href="/register" className='text-primary'>Đăng ký</Link>
+          </p>
           <button className="w-full mt-4 border p-2 rounded-lg" type="submit">
             Đăng nhập
           </button>

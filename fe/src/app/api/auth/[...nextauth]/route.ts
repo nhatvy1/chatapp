@@ -1,4 +1,4 @@
-import { axiosInstanceNonAuth } from '@/axios/instance'
+import { axiosInstanceNonAuth } from '@/services/axios/instance'
 import { NextAuthOptions } from 'next-auth'
 import NextAuth from 'next-auth/next'
 import CredentialsProvider from 'next-auth/providers/credentials'
@@ -34,7 +34,10 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) {
           return null
         }
-        const response: any = await axiosInstanceNonAuth.post('/auth/login', credentials)
+        const response: any = await axiosInstanceNonAuth.post(
+          '/auth/login',
+          credentials,
+        )
         if (response && response.statusCode === 200) {
           return response.result
         }
@@ -44,19 +47,23 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      // console.log('Check token: ', token)
-      // console.log('Check user: ', user)
-
+      if(user) {
+        return { ...token, ...user }
+      }
       return token
     },
-    async session({ session, user, token }) {
-      return session
-    }
+    async session({ session, token }) {
+      session.user = token.user
+      session.access_token = token.access_token
+      session.refresh_token = token.refresh_token
+
+      return Promise.resolve(session)
+    },
   },
   pages: {
     signIn: '/login',
-    signOut: '/logout'
-  }
+    // signOut: '/logout'
+  },
 }
 
 const handler = NextAuth(authOptions)

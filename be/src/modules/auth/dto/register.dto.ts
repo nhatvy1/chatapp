@@ -20,6 +20,6 @@ import {
     @MaxLength(100)
     readonly password: string;
   
-    @IsEmpty()
-    avatar: string;
+    // @IsNotEmpty()
+    // avatar: File;
   }
