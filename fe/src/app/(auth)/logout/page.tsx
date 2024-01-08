@@ -7,7 +7,7 @@ const Logout = () => {
   return (
     <div>
       <button
-        className="border"
+        className='border'
         onClick={() =>
           signOut({ redirect: false }).then(() => router.push('/login'))
         }

@@ -18,11 +18,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang='en'>
       <body className={inter.className}>
         <AuthProviders>{children}</AuthProviders>
         <ToastContainer
-          position="top-right"
+          position='top-right'
           autoClose={3000}
           hideProgressBar={false}
           newestOnTop={false}
@@ -31,7 +31,7 @@ export default function RootLayout({
           pauseOnFocusLoss
           draggable
           pauseOnHover
-          theme="light"
+          theme='light'
         />
       </body>
     </html>
