@@ -16,6 +16,16 @@ export class RoomService {
     return this.roomRepository.findOneBy({ id })
   }
 
+  async getRoomByTwoUser(memberId: number, user: any) {
+    const findRoom = await this.roomRepository
+      .createQueryBuilder('room')
+      .innerJoinAndSelect('room.members', 'user')
+      .where('user.id IN (:...userArr)', { userArr: [memberId, user.id] })
+      .getOne()
+
+    return findRoom
+  }
+
   async createRoom(createRoomDto: CreateRoomDto, user: any) {
     const user1 = await this.userService.findUserById(user.userId)
     const user2 = await this.userService.findUserById(createRoomDto.member)

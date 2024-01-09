@@ -9,6 +9,7 @@ import { AuthModule } from './modules/auth/auth.module'
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module'
 import { RoomModule } from './modules/room/room.module'
 import { MessageModule } from './modules/message/message.module'
+import { ChatGateway } from './modules/chat/chat.gateway'
 
 @Module({
   imports: [
@@ -21,6 +22,6 @@ import { MessageModule } from './modules/message/message.module'
     MessageModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ChatGateway],
 })
 export class AppModule {}

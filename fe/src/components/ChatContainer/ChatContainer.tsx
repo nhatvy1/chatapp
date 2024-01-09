@@ -1,5 +1,6 @@
 import Header from './Header'
 import ChatInput from '../ChatInput/ChatInput'
+import { Socket } from 'socket.io-client'
 
 const messages = [
   'first',
@@ -29,11 +30,17 @@ const messages = [
   '123',
 ]
 
-const Content = () => {
+interface Props {
+  currentChat: IUser
+  socket: any 
+}
+
+const ChatContainer = ({ currentChat, socket }: Props) => {
+  const { fullName, avatar } = currentChat
   return (
     <div className='flex-1 relative h-full'>
-      <Header />
-      
+      <Header fullName={fullName} avatar={avatar} />
+
       <ul className='absolute top-[11%] w-full h-[79%] left-0 flex flex-col-reverse overflow-auto p-2 no-scrollbar'>
         {messages.map((item, index) => (
           <li
@@ -60,4 +67,4 @@ const Content = () => {
   )
 }
 
-export default Content
+export default ChatContainer
