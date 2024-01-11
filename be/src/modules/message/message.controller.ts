@@ -25,11 +25,10 @@ export class MessageController {
     @GetCurrentUser() user: any,
     @Body() createMessageDto: CreateMessageDto,
   ) {
-    const result = await this.messageService.createMessage(user, createMessageDto)
+    await this.messageService.createMessage(user, createMessageDto)
     return Response({
       message: 'success',
       statusCode: HttpStatus.OK,
-      result
     })
   }
 }

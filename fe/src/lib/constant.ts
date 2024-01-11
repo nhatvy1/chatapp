@@ -5,4 +5,9 @@ export const endpoint = {
   register: 'auth/register',
 
   get_all_user: 'user',
+
+  rooms: 'rooms',
+  search_rooms: 'rooms/group-chat-normal',
+
+  messages: 'messages'
 }

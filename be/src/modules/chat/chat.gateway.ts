@@ -2,20 +2,43 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
   OnGatewayInit,
+  SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets'
 import { Socket, Server } from 'socket.io'
+import { MessageService } from '../message/message.service'
 
 @WebSocketGateway({ cors: { origin: '*' } })
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
+  constructor(private readonly messageService: MessageService) {}
+
   @WebSocketServer()
   sever: Server
 
   afterInit(server: Server) {
     console.log(server)
+  }
+
+  @SubscribeMessage('join-room')
+  handleJoinRoom(client: Socket, room: string) {
+    console.log('Check room: ', room)
+    client.join(room)
+    client.emit('joined-room', room)
+  }
+
+  @SubscribeMessage('leave-room')
+  handleLeaveRoom(client: Socket, room: string) {
+    client.leave(room)
+    client.emit('left-room', room)
+  }
+
+  @SubscribeMessage('send-message')
+  async handleSendMessage(client: Socket, data: any) {
+    const response = await this.messageService.createMessageBySocket(data)
+    this.sever.emit('receive-message', response)
   }
 
   handleConnection(client: Socket, ...args: any[]) {
