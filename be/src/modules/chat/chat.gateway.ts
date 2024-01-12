@@ -24,13 +24,14 @@ export class ChatGateway
 
   @SubscribeMessage('join-room')
   handleJoinRoom(client: Socket, room: string) {
-    console.log('Check room: ', room)
+    console.log('Join room: ', room)
     client.join(room)
     client.emit('joined-room', room)
   }
 
   @SubscribeMessage('leave-room')
   handleLeaveRoom(client: Socket, room: string) {
+    console.log('Left room: ', room)
     client.leave(room)
     client.emit('left-room', room)
   }
@@ -38,7 +39,8 @@ export class ChatGateway
   @SubscribeMessage('send-message')
   async handleSendMessage(client: Socket, data: any) {
     const response = await this.messageService.createMessageBySocket(data)
-    this.sever.emit('receive-message', response)
+    console.log('Check data: ', data)
+    this.sever.to(data.room).emit('receive-message', response)
   }
 
   handleConnection(client: Socket, ...args: any[]) {
