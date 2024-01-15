@@ -27,7 +27,7 @@ const Chat = ({ users }: Props) => {
 
   useEffect(() => {
     socket.current = io('http://localhost:5000')
-  }, [currentUser])
+  }, [])
 
   return (
     <div className='flex border w-full h-full justify-between shadow-2xl rounded-3xl bg-white overflow-hidden'>

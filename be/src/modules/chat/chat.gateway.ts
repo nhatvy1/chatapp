@@ -35,7 +35,7 @@ export class ChatGateway
     client.leave(room)
     client.emit('left-room', room)
   }
-
+  
   @SubscribeMessage('send-message')
   async handleSendMessage(client: Socket, data: any) {
     const response = await this.messageService.createMessageBySocket(data)

@@ -12,10 +12,10 @@ interface Props {
 
 const ChatContainer = ({ currentChat, socket }: Props) => {
   const { fullName, avatar, id } = currentChat
-  const [messages, setMessages] = useState<any>()
+  const [messages, setMessages] = useState<IMessage[]>([])
   const [arrivalMessage, setArrivalMessage] = useState<any>()
   const [room, setRoom] = useState<number | null>(null)
-  const scrollRef = useRef<any>();
+  const scrollRef = useRef<any>()
 
   const { data: session } = useSession()
 
@@ -26,6 +26,7 @@ const ChatContainer = ({ currentChat, socket }: Props) => {
         const res = await getMessageByRoomId(checkRoom.result.id)
         setMessages(res.result)
         setRoom(checkRoom.result.id)
+        socket.current.emit('join-room', checkRoom.result.id)
       } else {
         const data: any = {
           title: 'chat-app',
@@ -33,40 +34,49 @@ const ChatContainer = ({ currentChat, socket }: Props) => {
           member: id,
         }
         const createRoom = await createRoomTwoUser(data)
+        if (Object.keys(createRoom.result).length !== 0) {
+          socket.current.emit('join-room', createRoom.result.id)
+          setRoom(createRoom.result.id)
+        }
       }
     } catch (e) {
     } finally {
-      socket.current.emit('join-room', '1')
     }
   }
 
-  const handleSendMessagge = (text: string)=> {
+  const handleSendMessagge = (text: string) => {
     socket.current.emit('send-message', {
       text,
       owner: session?.user.id,
-      room
+      room,
     })
   }
 
   useEffect(() => {
+    setMessages([])
     checkRoomAndGetMessagge()
   }, [currentChat])
 
-  useEffect(()=> {
-    if(socket.current) {
-      socket.current.on('receive-message', (message: any)=> {
+  useEffect(() => {
+    if (socket.current) {
+      socket.current.on('receive-message', (message: any) => {
         setArrivalMessage(message)
       })
     }
   }, [])
 
-  useEffect(()=> {
-    arrivalMessage && setMessages((prev: any) => [...prev, arrivalMessage]);
+
+  useEffect(() => {
+    if(arrivalMessage && messages.length === 0) {
+      setMessages([arrivalMessage])
+    } else {
+      arrivalMessage && setMessages((prev: any) => [...prev, arrivalMessage])
+    }
   }, [arrivalMessage])
 
   useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    scrollRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
 
   return (
     <div className='flex-1 relative h-full'>
@@ -97,7 +107,7 @@ const ChatContainer = ({ currentChat, socket }: Props) => {
           ))}
       </ul>
 
-      <ChatInput handleChangeMessage={handleSendMessagge}/>
+      <ChatInput handleChangeMessage={handleSendMessagge} />
     </div>
   )
 }

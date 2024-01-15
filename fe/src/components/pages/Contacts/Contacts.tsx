@@ -1,3 +1,4 @@
+import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { useState } from 'react'
 import { CiSearch } from 'react-icons/ci'
@@ -11,6 +12,8 @@ const Contacts = ({ users, changeChat }: Props) => {
   const [currentSelected, setCurrentSelected] = useState<number | undefined>(
     undefined,
   )
+
+  const { data: session } = useSession()
 
   const handleCurrentChat = (index: number, contact: IUser) => {
     setCurrentSelected(index)
@@ -58,7 +61,7 @@ const Contacts = ({ users, changeChat }: Props) => {
       >
         <div className='w-[50px] h-[50px] overflow-hidden border rounded-full'>
           <Image
-            src='/messi.jpg'
+            src={session?.user.avatar || '/messi.jpg'}
             alt='Loi anh'
             width={200}
             height={200}
